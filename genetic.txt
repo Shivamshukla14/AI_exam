@@ -1,0 +1,61 @@
+from deap import tools
+import random
+
+population = ["10101010","11110000","01010101","00001111","10111011","01000100","11100111","00000000"]
+
+binary = []
+
+for i in range(len(population)):
+    binary.append(int(population[i],2))
+
+binary
+
+for i in range(len(population)):
+    print("Individual [",i,"]: ",population[i],"\tFitness: ",binary[i])
+
+def crossoverEP():
+    parents = tools.selection.selRandom(population,2)
+    
+    print("Selected Individuals\nParent 1:",parents[0],"\tFitness:",binary[population.index(parents[0])],"\nParent 2: ",
+         parents[1],"\tFitness: ",binary[population.index(parents[1])],"\n")
+    children = list(tools.crossover.cxOnePoint(list(parents[0]),list(parents[1])))
+    
+    f_child1 = int("".join(children[0]),2)
+    f_child2 = int("".join(children[1]),2)
+    
+    print("Child 1: ","".join(children[0]),"\tFitness",f_child1)
+    print("Child 2: ","".join(children[1]),"\tFitness",f_child2)
+    
+    if(f_child1 < f_child2):
+        print("\nChild ","".join(children[1]),"Survive to next generation")
+    else:
+        print("\nChild ","".join(children[0]),"Survive to next generation")
+        
+
+def mutationEP():
+    parent = tools.selection.selRandom(population,1)
+    print("Selected Individual: ",parent[0],"\tFitness: ",binary[population.index(parent[0])])
+    child_list = list(parent[0])
+    mutate_bit = random.choice(range(1,7))
+    if child_list[mutate_bit] == '1':
+        child_list[mutate_bit] ='0'
+    else:
+        child_list[mutate_bit] = '1'
+    child = int("".join(child_list),2)
+    print("\nMutated Child: ","".join(child_list),"\tFitness: ",child,"\n")
+    if (child<=binary[population.index(parent[0])]):
+        print("Child has not evolved")
+    if (child>binary[population.index(parent[0])]):
+        print("Child has evolved")
+
+while True:
+    evolution = input("\nPlease enter choice(or Quit type exit)\nCrossover or Mutation:").lower()
+    if evolution == "crossover":
+        crossoverEP()
+    elif evolution == "mutation":
+        mutationEP()
+    elif evolution == "exit":
+        break
+    else:
+        print("Please enter a valid choice")
+        
